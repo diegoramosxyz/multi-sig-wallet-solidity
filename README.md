@@ -1,1 +1,1 @@
-# multi-sig-wallet-solidity
+# Ethereum Multi-Sig Wallet
