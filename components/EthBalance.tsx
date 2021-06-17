@@ -1,5 +1,5 @@
 import { GlobalContext } from 'context/GlobalState'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 export default function EthBalance() {
   const { state, dispatch } = useContext(GlobalContext)
@@ -11,7 +11,7 @@ export default function EthBalance() {
         onClick={async () => {
           // MetaMask guide on Ethereum JSON-RPC Methods
           // https://docs.metamask.io/guide/rpc-api.html#ethereum-json-rpc-methods
-          let balance = await (window as any).ethereum
+          let balance = await window.ethereum
             .request({
               method: 'eth_getBalance',
               params: [state.metamask.address],

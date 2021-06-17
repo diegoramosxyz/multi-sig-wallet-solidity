@@ -8,7 +8,7 @@ export default function ConnectToMetaMask() {
   // https://eips.ethereum.org/EIPS/eip-1102
   async function connetToMetaMask() {
     try {
-      let accounts = await (window as any).ethereum.request({
+      let accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
       dispatch({ type: 'METAMASK', payload: accounts[0] })
