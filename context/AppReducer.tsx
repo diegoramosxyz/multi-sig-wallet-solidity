@@ -14,12 +14,17 @@ const AppReducer = (state: any, action: any) => {
           balance: action.payload
         },
       }
+    case 'ADD_CONTRACT':
+      return {
+        ...state,
+        contract: action.payload
+      } 
     case 'METAMASK':
       return {
         ...state,
         metamask: { 
           ...state.metamask,
-          address: action.payload
+          address: action.payload ? action.payload : ''
         },
       }
     default:

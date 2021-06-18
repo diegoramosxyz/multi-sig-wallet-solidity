@@ -11,9 +11,10 @@ export type State = {
     address: string
     balance: number
   }
+  contract: any
 }
 
 export type Actions = {
-  type: 'CONNECT' | 'METAMASK' | 'BALANCE'
+  type: 'CONNECT' | 'METAMASK' | 'BALANCE' | 'ADD_CONTRACT'
   payload?: any
 }

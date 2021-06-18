@@ -1,5 +1,5 @@
 import { GlobalContext } from 'context/GlobalState'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 
 export default function EthBalance() {
   const { state, dispatch } = useContext(GlobalContext)
@@ -35,6 +35,7 @@ export default function EthBalance() {
       >
         Check ETH balance
       </button>
+      <p>{state.metamask.address}</p>
       <p>{`Balance: ${state.metamask.balance} ETH`}</p>
     </React.Fragment>
   )

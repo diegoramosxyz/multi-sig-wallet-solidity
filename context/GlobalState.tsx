@@ -7,7 +7,8 @@ const initialState: State = {
   metamask: {
     address: '',
     balance: 0
-  }
+  },
+  contract: null
 }
 
 // The global context becomes a single source of truth
