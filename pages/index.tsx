@@ -11,7 +11,7 @@ import { useContext } from 'react'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
 
 export default function index() {
-  const { dispatch } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
   // MultiSigWallet contract running locally on hardhat node
 const contractAddress = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512'
 
@@ -42,18 +42,21 @@ const contractAddress = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512'
     let contract = new Contract(contractAddress, MultiSigWallet.abi, provider.getSigner())
     // Save the contract in a global state variable
     dispatch({ type: 'ADD_CONTRACT', payload: contract })
+    
   }, [])
 
   return (
     <Layout head="Multi-Sig Wallet">
       <h1 className="text-center text-3xl mb-4">
-        Hello Decentralized World! 👋
+        Multi-Sig Wallet 🔐
       </h1>
       <EthBalance />
       <SendEth/>
       <CallContract/>
       <SubmitTransaction/>
       <GetTransaction/>
+      <button onClick={async () => 
+  console.log(await state.contract.queryFilter('SubmitTransaction'))}>Count</button>
     </Layout>
   )
 }

@@ -1,39 +1,65 @@
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { ethers } from 'ethers'
 import { GlobalContext } from 'context/GlobalState'
+import { useForm } from 'react-hook-form'
+import { SubmitTransactionEventListener } from 'utils/eventListeners'
+import { submitTransaction } from 'utils/contractMethods'
 
 export default function CallContract() {
+  const { register, handleSubmit } = useForm()
   const { state } = useContext(GlobalContext)
-  let oneEth = ethers.utils.parseEther('1.0')
 
-  async function submitTransaction() {
-    let tx = await state.contract.submitTransaction(
-      '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
-      oneEth,
-      '0x'
-    )
-    console.log(tx)
-
-    // Listen to the SubmitTransaction event
-    state.contract.on(
-      'SubmitTransaction',
-      (owner: string, txIndex: number, to: string, value: any, data: string) =>
-        console.log({
-          owner,
-          txIndex,
-          to,
-          value: value.toString(),
-          data,
-        })
-    )
+  async function onSubmit({
+    _to,
+    _value,
+    _data,
+  }: {
+    _to: string
+    _value: string
+    _data: string
+  }) {
+    try {
+      await submitTransaction(
+        state,
+        _to,
+        // Convert a stringified number into a BigNumber type
+        // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
+        ethers.utils.parseEther(_value),
+        _data
+      )
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
-    <button
-      onClick={() => submitTransaction()}
-      className="px-3 py-2 rounded bg-blue-800 text-white"
-    >
-      Submit Transaction
-    </button>
+    <Fragment>
+      <p>Submit a transaction</p>
+      <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
+        <label htmlFor="_to" className="sr-only" />
+        <input
+          className="block rounded mb-3 ring-1 px-3 py-2"
+          {...register('_to')}
+          placeholder="To"
+        />
+        <label htmlFor="_value" className="sr-only" />
+        <input
+          className="block rounded mb-3 ring-1 px-3 py-2"
+          {...register('_value')}
+          placeholder="Value in ETH"
+        />
+        <label htmlFor="_data" className="sr-only" />
+        <input
+          className="block rounded mb-3 ring-1 px-3 py-2"
+          {...register('_data')}
+          placeholder="Data"
+          defaultValue="0x"
+        />
+
+        <button className="px-3 py-2 rounded bg-blue-800 text-white">
+          Submit Transaction
+        </button>
+      </form>
+    </Fragment>
   )
 }

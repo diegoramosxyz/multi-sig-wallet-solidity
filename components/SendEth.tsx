@@ -1,11 +1,15 @@
+import { ethers } from 'ethers'
+
 async function sendTx() {
+  let oneEth = ethers.utils.parseEther('1.0')
+  
   let params = [
     {
       from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       to: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
-      gas: Number(21000).toString(16),
-      gasPrice: Number(2500000).toString(16),
-      value: Number(1000000000000000000).toString(16),
+      gas: ethers.utils.hexValue(21000),
+      gasPrice: ethers.utils.hexValue(2500000),
+      value: oneEth.toHexString(),
     },
   ]
   await window.ethereum
