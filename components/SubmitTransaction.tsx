@@ -6,7 +6,9 @@ import { submitTransaction } from 'utils/contractMethods'
 
 export default function CallContract() {
   const { register, handleSubmit } = useForm()
-  const { state: {contract} } = useContext(GlobalContext)
+  const {
+    state: { contract },
+  } = useContext(GlobalContext)
 
   async function onSubmit({
     _to,
@@ -17,19 +19,15 @@ export default function CallContract() {
     _value: string
     _data: string
   }) {
-    try {
-      if (contract) {
-        await submitTransaction(
-          contract,
-          _to,
-          // Convert a stringified number into a BigNumber type
-          // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
-          ethers.utils.parseEther(_value),
-          _data
-        )
-      }
-    } catch (error) {
-      console.error(error)
+    if (contract) {
+      await submitTransaction(
+        contract,
+        _to,
+        // Convert a stringified number into a BigNumber type
+        // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
+        ethers.utils.parseEther(_value),
+        _data
+      )
     }
   }
 

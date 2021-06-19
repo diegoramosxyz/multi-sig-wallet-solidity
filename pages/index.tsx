@@ -2,7 +2,6 @@ import Layout from 'components/Layout'
 import { ethers, Contract } from 'ethers'
 import UserAccount from 'components/UserAccount'
 import SendEth from 'components/SendEth'
-import GetTransaction from 'components/GetTransaction'
 import SubmitTransaction from 'components/SubmitTransaction'
 import { useEffect, useContext } from 'react'
 import { GlobalContext } from 'context/GlobalState'
@@ -64,7 +63,6 @@ export default function index() {
       <UserAccount />
       <SendEth />
       <SubmitTransaction />
-      <GetTransaction />
       <Transactions />
     </Layout>
   )

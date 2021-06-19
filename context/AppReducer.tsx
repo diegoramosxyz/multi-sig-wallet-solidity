@@ -14,7 +14,6 @@ import {
 const AppReducer = (state: any, action: any) => {
   switch (action.type) {
     case 'UPDATE_USER':
-      console.log('UPDATE_USER', action.payload)
       return {
         ...state,
         user: {
