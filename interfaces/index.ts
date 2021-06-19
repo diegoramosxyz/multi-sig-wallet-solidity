@@ -1,4 +1,5 @@
 import React from 'react'
+import { ethers } from 'ethers'
 
 export type GlobalContextType = {
   state: State
@@ -6,15 +7,20 @@ export type GlobalContextType = {
 }
 
 export type State = {
-  connected: boolean
-  metamask: {
-    address: string
-    balance: number
+  user: {
+    balance: string | null
+    address: string | null
   }
-  contract: any
+  provider: ethers.providers.Web3Provider | null
+  contract: ethers.Contract | null
+  transactions: any[]
 }
 
 export type Actions = {
-  type: 'CONNECT' | 'METAMASK' | 'BALANCE' | 'ADD_CONTRACT'
+  type:
+    | 'UPDATE_USER'
+    | 'ADD_CONTRACT'
+    | 'ADD_TRANSACTIONS'
+    | 'ADD_PROVIDER'
   payload?: any
 }

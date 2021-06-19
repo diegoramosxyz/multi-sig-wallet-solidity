@@ -206,9 +206,9 @@ contract MultiSigWallet {
 }
 
 contract TestContract {
-    uint public i;
+    uint256 public i;
 
-    function callMe(uint j) public {
+    function callMe(uint256 j) public {
         i += j;
     }
 

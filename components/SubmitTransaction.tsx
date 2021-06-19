@@ -2,12 +2,11 @@ import { Fragment, useContext } from 'react'
 import { ethers } from 'ethers'
 import { GlobalContext } from 'context/GlobalState'
 import { useForm } from 'react-hook-form'
-import { SubmitTransactionEventListener } from 'utils/eventListeners'
 import { submitTransaction } from 'utils/contractMethods'
 
 export default function CallContract() {
   const { register, handleSubmit } = useForm()
-  const { state } = useContext(GlobalContext)
+  const { state: {contract} } = useContext(GlobalContext)
 
   async function onSubmit({
     _to,
@@ -19,14 +18,16 @@ export default function CallContract() {
     _data: string
   }) {
     try {
-      await submitTransaction(
-        state,
-        _to,
-        // Convert a stringified number into a BigNumber type
-        // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
-        ethers.utils.parseEther(_value),
-        _data
-      )
+      if (contract) {
+        await submitTransaction(
+          contract,
+          _to,
+          // Convert a stringified number into a BigNumber type
+          // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
+          ethers.utils.parseEther(_value),
+          _data
+        )
+      }
     } catch (error) {
       console.error(error)
     }
@@ -38,19 +39,19 @@ export default function CallContract() {
       <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
         <label htmlFor="_to" className="sr-only" />
         <input
-          className="block rounded mb-3 ring-1 px-3 py-2"
+          className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
           {...register('_to')}
           placeholder="To"
         />
         <label htmlFor="_value" className="sr-only" />
         <input
-          className="block rounded mb-3 ring-1 px-3 py-2"
+          className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
           {...register('_value')}
           placeholder="Value in ETH"
         />
         <label htmlFor="_data" className="sr-only" />
         <input
-          className="block rounded mb-3 ring-1 px-3 py-2"
+          className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
           {...register('_data')}
           placeholder="Data"
           defaultValue="0x"

@@ -2,11 +2,15 @@ import { useContext } from 'react'
 import { GlobalContext } from 'context/GlobalState'
 
 export default function CallContract() {
-  const { state } = useContext(GlobalContext)
+  const {
+    state: { contract },
+  } = useContext(GlobalContext)
 
   async function getTransaction() {
-    let tx = await state.contract.transactions(0)
-    console.log(tx)
+    if (contract) {
+      let tx = await contract.transactions(0)
+      console.log(tx)
+    }
   }
 
   return (

@@ -10,40 +10,24 @@ import {
   SubmitTransactionEventListener,
 } from 'utils/eventListeners'
 
-import { ethers } from 'ethers'
-
-async function getTransactions(contract: ethers.Contract) {
-  // @ts-ignore
-  // queryFilter has the wrong type. Report.
-  let res = await contract.queryFilter('SubmitTransaction')
-  console.log(
-    res.map((events) => {
-      if (events.args) {
-        let { args } = events
-        return {
-          owner: args['owner'],
-          txIndex: args['txIndex'],
-          to: args['to'],
-          value: args['value'],
-          data: args['data'],
-        }
-      }
-    })
-  )
-}
-
 // TODO: Revise types
 const AppReducer = (state: any, action: any) => {
   switch (action.type) {
-    case 'CONNECT':
-      return { ...state, connected: !state.connected }
-    case 'BALANCE':
+    case 'UPDATE_USER':
+      console.log('UPDATE_USER', action.payload)
       return {
         ...state,
-        metamask: {
-          ...state.metamask,
-          balance: action.payload,
+        user: {
+          balance: action.payload.balance,
+          address: action.payload.address,
         },
+      }
+    case 'ADD_TRANSACTIONS':
+      return { ...state, transactions: action.payload }
+    case 'ADD_PROVIDER':
+      return {
+        ...state,
+        provider: action.payload,
       }
     case 'ADD_CONTRACT':
       DepositEventListener(action.payload)
@@ -51,18 +35,9 @@ const AppReducer = (state: any, action: any) => {
       ConfirmTransactionEventListener(action.payload)
       RevokeConfirmationEventListener(action.payload)
       ExecuteTransactionEventListener(action.payload)
-      getTransactions(action.payload)
       return {
         ...state,
         contract: action.payload,
-      }
-    case 'METAMASK':
-      return {
-        ...state,
-        metamask: {
-          ...state.metamask,
-          address: action.payload ? action.payload : '',
-        },
       }
     default:
       return state

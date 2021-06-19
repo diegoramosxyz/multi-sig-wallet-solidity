@@ -3,12 +3,13 @@ import { GlobalContextType, State } from 'interfaces'
 import AppReducer from './AppReducer'
 
 const initialState: State = {
-  connected: false,
-  metamask: {
-    address: '',
-    balance: 0
+  user:{
+    address: null,
+    balance: null
   },
-  contract: null
+  provider: null,
+  contract: null,
+  transactions: []
 }
 
 // The global context becomes a single source of truth

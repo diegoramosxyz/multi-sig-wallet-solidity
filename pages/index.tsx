@@ -1,62 +1,71 @@
 import Layout from 'components/Layout'
 import { ethers, Contract } from 'ethers'
-import EthBalance from 'components/EthBalance'
+import UserAccount from 'components/UserAccount'
 import SendEth from 'components/SendEth'
-import CallContract from 'components/CallContract'
 import GetTransaction from 'components/GetTransaction'
 import SubmitTransaction from 'components/SubmitTransaction'
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import { GlobalContext } from 'context/GlobalState'
-import { useContext } from 'react'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
+import { getTransactions, updateUser } from 'utils/eventData'
+import Transactions from 'components/Transactions'
 
 export default function index() {
-  const { state, dispatch } = useContext(GlobalContext)
+  const { dispatch } = useContext(GlobalContext)
   // MultiSigWallet contract running locally on hardhat node
-const contractAddress = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512'
+  const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
   useEffect(() => {
+    // Get the provider from the browser
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    dispatch({ type: 'ADD_PROVIDER', payload: provider })
+
+    // Create a new Contract instance for the Multi Sig Wallet
+    let contract = new Contract(
+      contractAddress,
+      MultiSigWallet.abi,
+      provider.getSigner()
+    )
+    dispatch({ type: 'ADD_CONTRACT', payload: contract })
+
     // Check that the MetaMask is installed
     if (window.ethereum) {
-      // Detect when accounts are changed in MetaMask
-      window.ethereum
-        .on('accountsChanged', (accounts: string[]) =>
-          dispatch({ type: 'METAMASK', payload: accounts[0] })
-        )
-
       // Detect the account on MetaMask upon page reload
       window.ethereum
         .request({ method: 'eth_accounts' })
-        .then((accounts: string[]) =>
-          dispatch({ type: 'METAMASK', payload: accounts[0] })
-        )
+        .then(async (accounts: string[]) => {
+          let user = await updateUser(provider, accounts[0])
+          dispatch({ type: 'UPDATE_USER', payload: user })
+        })
         .catch((err: Error) => console.error(err))
+
+      // Detect when accounts are changed in MetaMask
+      window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        // Add event listerner to detect when accounts are changed in MetaMask
+        let user = await updateUser(provider, accounts[0])
+        dispatch({ type: 'UPDATE_USER', payload: user })
+      })
     } else {
       // Prompt user to install MetaMask
       // Todo: Show pop up message
       console.log('INSTALL METAMASK TO USE THIS DAPP!')
     }
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    // Create a new Contract instance for the Multi Sig Wallet
-    let contract = new Contract(contractAddress, MultiSigWallet.abi, provider.getSigner())
-    // Save the contract in a global state variable
-    dispatch({ type: 'ADD_CONTRACT', payload: contract })
-    
+    ;(async () => {
+      dispatch({
+        type: 'ADD_TRANSACTIONS',
+        payload: await getTransactions(contract),
+      })
+    })()
   }, [])
 
   return (
     <Layout head="Multi-Sig Wallet">
-      <h1 className="text-center text-3xl mb-4">
-        Multi-Sig Wallet 🔐
-      </h1>
-      <EthBalance />
-      <SendEth/>
-      <CallContract/>
-      <SubmitTransaction/>
-      <GetTransaction/>
-      <button onClick={async () => 
-  console.log(await state.contract.queryFilter('SubmitTransaction'))}>Count</button>
+      <UserAccount />
+      <SendEth />
+      <SubmitTransaction />
+      <GetTransaction />
+      <Transactions />
     </Layout>
   )
 }

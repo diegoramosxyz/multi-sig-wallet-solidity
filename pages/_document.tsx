@@ -14,7 +14,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html className="bg-trueGray-50 text-trueGray-800 dark:bg-trueGray-900 dark:text-trueGray-200">
+      <Html className="bg-trueGray-900 text-trueGray-200">
         <Head />
         {/* Import ethers using a CDN */}
         {/* <script
