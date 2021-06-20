@@ -28,7 +28,7 @@ contract MultiSigWallet {
     /// @return The amount of confirmations needed to execute a transaction
     uint256 public numConfirmationsRequired;
 
-    /// @return Indicates whether a transaction comes from an owner
+    /// @return Indicates wether an address has confirmed a transaction
     mapping(uint256 => mapping(address => bool)) public isConfirmed;
 
     struct Transaction {

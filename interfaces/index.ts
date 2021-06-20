@@ -1,5 +1,6 @@
 import React from 'react'
 import { ethers } from 'ethers'
+import { MultiSigWalletContract } from 'utils/types'
 
 export type GlobalContextType = {
   state: State
@@ -17,7 +18,7 @@ export type State = {
   }
   owners: string[]
   provider: ethers.providers.Web3Provider | null
-  contract: ethers.Contract | null
+  contract: MultiSigWalletContract | null
   transactions: any[]
 }
 

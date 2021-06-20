@@ -7,9 +7,10 @@ import Owners from 'components/Owners'
 import { useEffect, useContext } from 'react'
 import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
-import { getBalance, getOwners } from 'utils/eventData'
+import { getBalance } from 'utils/eventData'
 import Transactions from 'components/Transactions'
-import { getTransaction } from 'utils/contractMethods'
+import { getTransaction, getOwners } from 'utils/contractMethods'
+import { MultiSigWalletContract } from 'utils/types'
 
 export default function index() {
   const { dispatch } = useContext(GlobalContext)
@@ -26,7 +27,8 @@ export default function index() {
       contractAddress,
       MultiSigWallet.abi,
       provider.getSigner()
-    )
+    ) as MultiSigWalletContract
+
     dispatch({ type: 'ADD_CONTRACT', payload: contract })
 
     // Check that the MetaMask is installed
@@ -69,7 +71,14 @@ export default function index() {
       let length = (await contract.getTransactionCount()).toNumber()
       let arr: any[] = []
       for (let i = 0; i < length; i++) {
-        arr.push(await getTransaction(contract, i))
+        let obj = {
+          ...(await getTransaction(contract, ethers.BigNumber.from(i))),
+          confirmed: await contract.isConfirmed(
+            ethers.BigNumber.from(1),
+            await provider.getSigner().getAddress()
+          ),
+        }
+        arr.push(obj)
       }
       let owners = await getOwners(contract)
       dispatch({ type: 'UPDATE_OWNERS', payload: owners })

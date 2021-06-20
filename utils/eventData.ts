@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
-import { owners } from './contractMethods'
+import { MultiSigWalletContract } from './types'
 
-export async function getTransactions(contract: ethers.Contract) {
+export async function getTransactions(contract: MultiSigWalletContract) {
   // @ts-ignore
   // queryFilter has the wrong type. Report.
   let res = await contract.queryFilter('SubmitTransaction')
@@ -28,13 +28,4 @@ export async function getBalance(
   const BNBalance = await provider?.getBalance(address)
   // return the balance formated to ETH
   return BNBalance && ethers.utils.formatEther(BNBalance)
-}
-
-export async function getOwners(contract: ethers.Contract) {
-  let arr = []
-  // TODO: Get the length of owners array
-  for (let i = 0; i < 3; i++) {
-    arr.push(await owners(contract, i))
-  }
-  return arr
 }

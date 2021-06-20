@@ -2,7 +2,6 @@ import { Fragment, useContext } from 'react'
 import { ethers } from 'ethers'
 import { GlobalContext } from 'context/GlobalState'
 import { useForm } from 'react-hook-form'
-import { submitTransaction } from 'utils/contractMethods'
 
 export default function CallContract() {
   const { register, handleSubmit } = useForm()
@@ -20,8 +19,7 @@ export default function CallContract() {
     _data: string
   }) {
     if (contract) {
-      await submitTransaction(
-        contract,
+      await contract.submitTransaction(
         _to,
         // Convert a stringified number into a BigNumber type
         // https://docs.ethers.io/v5/api/utils/display-logic/#utils-formatEther
