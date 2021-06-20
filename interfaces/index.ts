@@ -11,6 +11,11 @@ export type State = {
     balance: string | null
     address: string | null
   }
+  balances: {
+    contract: string | null
+    userAccount: string | null
+  }
+  owners: string[]
   provider: ethers.providers.Web3Provider | null
   contract: ethers.Contract | null
   transactions: any[]
@@ -22,5 +27,7 @@ export type Actions = {
     | 'ADD_CONTRACT'
     | 'ADD_TRANSACTIONS'
     | 'ADD_PROVIDER'
+    | 'UPDATE_BALANCES'
+    | 'UPDATE_OWNERS'
   payload?: any
 }

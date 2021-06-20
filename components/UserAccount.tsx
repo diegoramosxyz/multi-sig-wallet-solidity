@@ -5,9 +5,9 @@ export default function UserAccount() {
   const { state } = useContext(GlobalContext)
 
   return (
-    <>
-      <p>{state.user.address}</p>
-      <p>{`${state.user.balance} ETH`}</p>
-    </>
+    <div className="mb-3">
+      <p className="font-mono">Account: {state.user.address}</p>
+      <p>Balance: {state.user.balance} ETH</p>
+    </div>
   )
 }

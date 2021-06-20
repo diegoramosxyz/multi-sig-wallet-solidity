@@ -20,9 +20,16 @@ export async function isConfirmed(contract: ethers.Contract, index: number) {
   return await contract.isConfirmed(index)
 }
 
-export async function transactions(contract: ethers.Contract, index: number) {
+export async function getTransaction(contract: ethers.Contract, index: number) {
   // returns a transaction object
-  return await contract.transactions(index)
+  let tx = await contract.transactions(index)
+  return {
+    data: tx['data'],
+    to: tx['to'],
+    executed: tx['executed'],
+    numConfirmations: tx['numConfirmations'].toNumber(),
+    value: ethers.utils.formatEther(tx['value']),
+  }
 }
 
 export async function submitTransaction(

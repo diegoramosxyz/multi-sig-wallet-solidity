@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { owners } from './contractMethods'
 
 export async function getTransactions(contract: ethers.Contract) {
   // @ts-ignore
@@ -20,15 +21,20 @@ export async function getTransactions(contract: ethers.Contract) {
   })
 }
 
-export async function updateUser(
+export async function getBalance(
   provider: ethers.providers.Web3Provider,
   address: string
 ) {
   const BNBalance = await provider?.getBalance(address)
-  let balance
-  BNBalance && (balance = ethers.utils.formatEther(BNBalance))
-  return {
-    address,
-    balance,
+  // return the balance formated to ETH
+  return BNBalance && ethers.utils.formatEther(BNBalance)
+}
+
+export async function getOwners(contract: ethers.Contract) {
+  let arr = []
+  // TODO: Get the length of owners array
+  for (let i = 0; i < 3; i++) {
+    arr.push(await owners(contract, i))
   }
+  return arr
 }

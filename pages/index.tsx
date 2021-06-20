@@ -1,13 +1,15 @@
 import Layout from 'components/Layout'
 import { ethers, Contract } from 'ethers'
 import UserAccount from 'components/UserAccount'
-import SendEth from 'components/SendEth'
 import SubmitTransaction from 'components/SubmitTransaction'
+import DepositEth from 'components/DepositEth'
+import Owners from 'components/Owners'
 import { useEffect, useContext } from 'react'
 import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
-import { getTransactions, updateUser } from 'utils/eventData'
+import { getBalance, getOwners } from 'utils/eventData'
 import Transactions from 'components/Transactions'
+import { getTransaction } from 'utils/contractMethods'
 
 export default function index() {
   const { dispatch } = useContext(GlobalContext)
@@ -33,16 +35,28 @@ export default function index() {
       window.ethereum
         .request({ method: 'eth_accounts' })
         .then(async (accounts: string[]) => {
-          let user = await updateUser(provider, accounts[0])
-          dispatch({ type: 'UPDATE_USER', payload: user })
+          let balance = await getBalance(provider, accounts[0])
+          dispatch({
+            type: 'UPDATE_USER',
+            payload: {
+              address: accounts[0],
+              balance,
+            },
+          })
         })
         .catch((err: Error) => console.error(err))
 
       // Detect when accounts are changed in MetaMask
       window.ethereum.on('accountsChanged', async (accounts: string[]) => {
         // Add event listerner to detect when accounts are changed in MetaMask
-        let user = await updateUser(provider, accounts[0])
-        dispatch({ type: 'UPDATE_USER', payload: user })
+        let balance = await getBalance(provider, accounts[0])
+        dispatch({
+          type: 'UPDATE_USER',
+          payload: {
+            address: accounts[0],
+            balance,
+          },
+        })
       })
     } else {
       // Prompt user to install MetaMask
@@ -50,10 +64,20 @@ export default function index() {
       console.log('INSTALL METAMASK TO USE THIS DAPP!')
     }
 
+    // TODO: Update automatically using on events
     ;(async () => {
+      let length = (await contract.getTransactionCount()).toNumber()
+      let arr: any[] = []
+      for (let i = 0; i < length; i++) {
+        arr.push(await getTransaction(contract, i))
+      }
+      let owners = await getOwners(contract)
+      dispatch({ type: 'UPDATE_OWNERS', payload: owners })
+      let balance = await getBalance(provider, contract.address)
+      dispatch({ type: 'UPDATE_BALANCES', payload: balance })
       dispatch({
         type: 'ADD_TRANSACTIONS',
-        payload: await getTransactions(contract),
+        payload: arr,
       })
     })()
   }, [])
@@ -61,7 +85,8 @@ export default function index() {
   return (
     <Layout head="Multi-Sig Wallet">
       <UserAccount />
-      <SendEth />
+      <Owners />
+      <DepositEth />
       <SubmitTransaction />
       <Transactions />
     </Layout>

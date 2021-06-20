@@ -38,19 +38,19 @@ export default function CallContract() {
         <label htmlFor="_to" className="sr-only" />
         <input
           className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
-          {...register('_to')}
+          {...register('_to', { required: true })}
           placeholder="To"
         />
         <label htmlFor="_value" className="sr-only" />
         <input
           className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
-          {...register('_value')}
+          {...register('_value', { required: true })}
           placeholder="Value in ETH"
         />
         <label htmlFor="_data" className="sr-only" />
         <input
           className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
-          {...register('_data')}
+          {...register('_data', { required: true })}
           placeholder="Data"
           defaultValue="0x"
         />

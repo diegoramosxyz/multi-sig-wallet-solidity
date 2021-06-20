@@ -1,6 +1,6 @@
 import { GlobalContext } from 'context/GlobalState'
 import { useContext } from 'react'
-import { updateUser } from 'utils/eventData'
+import { getBalance } from 'utils/eventData'
 
 export default function ConnectToMetaMask() {
   const {
@@ -15,8 +15,14 @@ export default function ConnectToMetaMask() {
     if (provider) {
       try {
         let accounts = await provider.send('eth_requestAccounts', [])
-        let user = await updateUser(provider, accounts[0])
-        dispatch({ type: 'UPDATE_USER', payload: user })
+        let balance = await getBalance(provider, accounts[0])
+        dispatch({
+          type: 'UPDATE_USER',
+          payload: {
+            balance,
+            address: accounts[0],
+          },
+        })
       } catch (err) {
         // EIP-1193: Ethereum Provider JavaScript API
         // All provider error types can be checked here: https://eips.ethereum.org/EIPS/eip-1193#provider-errors

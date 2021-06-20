@@ -21,6 +21,14 @@ const AppReducer = (state: any, action: any) => {
           address: action.payload.address,
         },
       }
+    case 'UPDATE_BALANCES':
+      return {
+        ...state,
+        balances: {
+          ...state.balances,
+          contract: action.payload,
+        },
+      }
     case 'ADD_TRANSACTIONS':
       return { ...state, transactions: action.payload }
     case 'ADD_PROVIDER':
@@ -37,6 +45,11 @@ const AppReducer = (state: any, action: any) => {
       return {
         ...state,
         contract: action.payload,
+      }
+    case 'UPDATE_OWNERS':
+      return {
+        ...state,
+        owners: action.payload,
       }
     default:
       return state

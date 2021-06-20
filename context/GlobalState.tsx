@@ -3,13 +3,18 @@ import { GlobalContextType, State } from 'interfaces'
 import AppReducer from './AppReducer'
 
 const initialState: State = {
-  user:{
+  user: {
     address: null,
-    balance: null
+    balance: null,
   },
+  balances: {
+    contract: null,
+    userAccount: null,
+  },
+  owners: [],
   provider: null,
   contract: null,
-  transactions: []
+  transactions: [],
 }
 
 // The global context becomes a single source of truth
