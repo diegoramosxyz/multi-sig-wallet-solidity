@@ -19,17 +19,35 @@ export default function Transactions() {
           <p>Data: {tx.data}</p>
           {!tx.executed && (
             <div>
-              <button
-                className="my-3 px-3 py-2 bg-blue-800 rounded mr-3"
-                onClick={async () =>
-                  contract &&
-                  console.log(
-                    await contract.confirmTransaction(ethers.BigNumber.from(i))
-                  )
-                }
-              >
-                Confirm
-              </button>
+              {tx.isConfirmed ? (
+                <button
+                  className="my-3 px-3 py-2 bg-red-800 rounded mr-3"
+                  onClick={async () =>
+                    contract &&
+                    console.log(
+                      await contract.revokeConfirmation(
+                        ethers.BigNumber.from(i)
+                      )
+                    )
+                  }
+                >
+                  Revoke
+                </button>
+              ) : (
+                <button
+                  className="my-3 px-3 py-2 bg-blue-800 rounded mr-3"
+                  onClick={async () =>
+                    contract &&
+                    console.log(
+                      await contract.confirmTransaction(
+                        ethers.BigNumber.from(i)
+                      )
+                    )
+                  }
+                >
+                  Confirm
+                </button>
+              )}
               {tx.numConfirmations >= 2 && (
                 <button
                   className="my-3 px-3 py-2 bg-blue-800 rounded"

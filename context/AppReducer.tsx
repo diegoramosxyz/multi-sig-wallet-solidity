@@ -2,16 +2,10 @@
 // is the current state. The action is a function that gets
 // called to update the state.
 
-import {
-  ConfirmTransactionEventListener,
-  DepositEventListener,
-  ExecuteTransactionEventListener,
-  RevokeConfirmationEventListener,
-  SubmitTransactionEventListener,
-} from 'utils/eventListeners'
+import { State } from 'interfaces'
 
 // TODO: Revise types
-const AppReducer = (state: any, action: any) => {
+const AppReducer = (state: State, action: any) => {
   switch (action.type) {
     case 'UPDATE_USER':
       return {
@@ -20,6 +14,14 @@ const AppReducer = (state: any, action: any) => {
           balance: action.payload.balance,
           address: action.payload.address,
         },
+      }
+    case 'UPDATE_TRANSACTION':
+      let txs = state.transactions
+      // Update selected transaction
+      txs[action.payload.txIndex] = action.payload.tx
+      return {
+        ...state,
+        transactions: txs,
       }
     case 'UPDATE_BALANCES':
       return {
@@ -37,11 +39,6 @@ const AppReducer = (state: any, action: any) => {
         provider: action.payload,
       }
     case 'ADD_CONTRACT':
-      DepositEventListener(action.payload)
-      SubmitTransactionEventListener(action.payload)
-      ConfirmTransactionEventListener(action.payload)
-      RevokeConfirmationEventListener(action.payload)
-      ExecuteTransactionEventListener(action.payload)
       return {
         ...state,
         contract: action.payload,

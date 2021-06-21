@@ -30,5 +30,6 @@ export type Actions = {
     | 'ADD_PROVIDER'
     | 'UPDATE_BALANCES'
     | 'UPDATE_OWNERS'
+    | 'UPDATE_TRANSACTION'
   payload?: any
 }

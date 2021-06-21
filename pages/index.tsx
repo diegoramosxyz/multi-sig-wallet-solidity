@@ -9,8 +9,9 @@ import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
 import { getBalance } from 'utils/eventData'
 import Transactions from 'components/Transactions'
-import { getTransaction, getOwners } from 'utils/contractMethods'
+import { getOwners, getAllTransactions } from 'utils/contractMethods'
 import { MultiSigWalletContract } from 'utils/types'
+import { ContractEventListener } from 'utils/eventListeners'
 
 export default function index() {
   const { dispatch } = useContext(GlobalContext)
@@ -37,12 +38,11 @@ export default function index() {
       window.ethereum
         .request({ method: 'eth_accounts' })
         .then(async (accounts: string[]) => {
-          let balance = await getBalance(provider, accounts[0])
           dispatch({
             type: 'UPDATE_USER',
             payload: {
               address: accounts[0],
-              balance,
+              balance: await getBalance(provider, accounts[0]),
             },
           })
         })
@@ -50,13 +50,17 @@ export default function index() {
 
       // Detect when accounts are changed in MetaMask
       window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        // Update transactions
+        dispatch({
+          type: 'ADD_TRANSACTIONS',
+          payload: await getAllTransactions(contract, provider),
+        })
         // Add event listerner to detect when accounts are changed in MetaMask
-        let balance = await getBalance(provider, accounts[0])
         dispatch({
           type: 'UPDATE_USER',
           payload: {
             address: accounts[0],
-            balance,
+            balance: await getBalance(provider, accounts[0]),
           },
         })
       })
@@ -66,27 +70,22 @@ export default function index() {
       console.log('INSTALL METAMASK TO USE THIS DAPP!')
     }
 
-    // TODO: Update automatically using on events
+    // Fetch initial data
     ;(async () => {
-      let length = (await contract.getTransactionCount()).toNumber()
-      let arr: any[] = []
-      for (let i = 0; i < length; i++) {
-        let obj = {
-          ...(await getTransaction(contract, ethers.BigNumber.from(i))),
-          confirmed: await contract.isConfirmed(
-            ethers.BigNumber.from(1),
-            await provider.getSigner().getAddress()
-          ),
-        }
-        arr.push(obj)
-      }
-      let owners = await getOwners(contract)
-      dispatch({ type: 'UPDATE_OWNERS', payload: owners })
-      let balance = await getBalance(provider, contract.address)
-      dispatch({ type: 'UPDATE_BALANCES', payload: balance })
+      // Create event listeners
+      ContractEventListener(contract, provider, dispatch, 'SubmitTransaction')
+      ContractEventListener(contract, provider, dispatch, 'ConfirmTransaction')
+      ContractEventListener(contract, provider, dispatch, 'ExecuteTransaction')
+      ContractEventListener(contract, provider, dispatch, 'RevokeConfirmation')
+
+      dispatch({ type: 'UPDATE_OWNERS', payload: await getOwners(contract) })
+      dispatch({
+        type: 'UPDATE_BALANCES',
+        payload: await getBalance(provider, contract.address),
+      })
       dispatch({
         type: 'ADD_TRANSACTIONS',
-        payload: arr,
+        payload: await getAllTransactions(contract, provider),
       })
     })()
   }, [])
