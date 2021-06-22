@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import { Actions } from 'interfaces'
 import { Dispatch } from 'react'
 import { getOneTransaction } from './contractMethods'
+import { getBalance } from './eventData'
 import { MultiSigWalletContract } from './types'
 
 // Ethers docs
@@ -32,14 +33,21 @@ export function ContractEventListener(
     | 'ExecuteTransaction'
     | 'RevokeConfirmation'
     | 'SubmitTransaction'
+    | 'Deposit'
 ) {
-  contract.on(event, async (_, txIndex: ethers.BigNumber) => {
-    dispatch({
-      type: 'UPDATE_TRANSACTION',
-      payload: {
-        txIndex,
-        tx: await getOneTransaction(contract, provider, txIndex),
-      },
+  if (event === 'Deposit') {
+    contract.on(event, async () => {
+      dispatch({
+        type: 'UPDATE_BALANCES',
+        payload: await getBalance(provider, contract.address),
+      })
     })
-  })
+  } else {
+    contract.on(event, async (_, txIndex: ethers.BigNumber) => {
+      dispatch({
+        type: 'UPDATE_TRANSACTION',
+        payload: await getOneTransaction(contract, provider, txIndex),
+      })
+    })
+  }
 }

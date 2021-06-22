@@ -16,9 +16,12 @@ const AppReducer = (state: State, action: any) => {
         },
       }
     case 'UPDATE_TRANSACTION':
+      // The transactions array is ordered in reverse
+      // To show newest entries first
       let txs = state.transactions
       // Update selected transaction
-      txs[action.payload.txIndex] = action.payload.tx
+      txs[txs.findIndex(({ txIndex }) => txIndex === action.payload.txIndex)] =
+        action.payload
       return {
         ...state,
         transactions: txs,

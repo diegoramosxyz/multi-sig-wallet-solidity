@@ -10,8 +10,8 @@ export default function Transactions() {
   return (
     <div>
       <h1 className="text-lg font-semibold mb-3">Transactions</h1>
-      {transactions.map((tx: any, i: number) => (
-        <div key={i} className="mb-5">
+      {transactions.map((tx: any) => (
+        <div key={tx.txIndex} className="mb-5">
           <p className="font-mono">To: {tx.to}</p>
           <p>Value: {tx.value} ETH</p>
           <p>Executed: {tx.executed ? 'True' : 'False'}</p>
@@ -26,7 +26,7 @@ export default function Transactions() {
                     contract &&
                     console.log(
                       await contract.revokeConfirmation(
-                        ethers.BigNumber.from(i)
+                        ethers.BigNumber.from(tx.txIndex)
                       )
                     )
                   }
@@ -40,7 +40,7 @@ export default function Transactions() {
                     contract &&
                     console.log(
                       await contract.confirmTransaction(
-                        ethers.BigNumber.from(i)
+                        ethers.BigNumber.from(tx.txIndex)
                       )
                     )
                   }
@@ -55,7 +55,7 @@ export default function Transactions() {
                     contract &&
                     console.log(
                       await contract.executeTransaction(
-                        ethers.BigNumber.from(i)
+                        ethers.BigNumber.from(tx.txIndex)
                       )
                     )
                   }

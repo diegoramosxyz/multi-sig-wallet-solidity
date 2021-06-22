@@ -23,7 +23,7 @@ export async function getAllTransactions(
       await getOneTransaction(contract, provider, ethers.BigNumber.from(i))
     )
   }
-  return arr
+  return arr.reverse()
 }
 
 export async function getOneTransaction(
@@ -44,6 +44,7 @@ export async function getOneTransaction(
     ...tx,
     numConfirmations: tx.numConfirmations.toNumber(),
     value: ethers.utils.formatEther(tx.value),
+    txIndex: index.toNumber(),
   }
 
   return {

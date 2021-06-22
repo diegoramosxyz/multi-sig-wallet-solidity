@@ -77,6 +77,7 @@ export default function index() {
       ContractEventListener(contract, provider, dispatch, 'ConfirmTransaction')
       ContractEventListener(contract, provider, dispatch, 'ExecuteTransaction')
       ContractEventListener(contract, provider, dispatch, 'RevokeConfirmation')
+      ContractEventListener(contract, provider, dispatch, 'Deposit')
 
       dispatch({ type: 'UPDATE_OWNERS', payload: await getOwners(contract) })
       dispatch({
