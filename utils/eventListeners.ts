@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { Actions } from 'interfaces'
 import { Dispatch } from 'react'
-import { getOneTransaction } from './contractMethods'
 import { getBalance } from './eventData'
 import { MultiSigWalletContract } from './types'
 
@@ -45,8 +44,15 @@ export function ContractEventListener(
   } else {
     contract.on(event, async (_, txIndex: ethers.BigNumber) => {
       dispatch({
+        type: 'TX_STATUS',
+        payload: null,
+      })
+      dispatch({
         type: 'UPDATE_TRANSACTION',
-        payload: await getOneTransaction(contract, provider, txIndex),
+        payload: {
+          txIndex: txIndex.toNumber(),
+          tx: await contract.transactions(txIndex),
+        },
       })
     })
   }

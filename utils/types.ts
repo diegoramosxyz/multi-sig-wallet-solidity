@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-type transaction = {
+export type transaction = {
   to: string
   value: ethers.BigNumber
   data: string
@@ -23,4 +23,6 @@ export interface MultiSigWalletContract extends ethers.Contract {
   executeTransaction(_txIndex: ethers.BigNumber): Promise<ethers.Transaction>
   revokeConfirmation(_txIndex: ethers.BigNumber): Promise<ethers.Transaction>
   getTransactionCount(): Promise<ethers.BigNumber>
+  getOwners(): Promise<string[]>
+  getTransactions(): Promise<transaction[]>
 }

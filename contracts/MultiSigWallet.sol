@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.6;
+pragma solidity ^0.8.0;
 
 contract MultiSigWallet {
     /// @notice Notifies when a deposit is made to the multi-sig wallet
@@ -39,7 +39,6 @@ contract MultiSigWallet {
         uint256 numConfirmations;
     }
 
-    /// @return All the executed and pending transactions in the multi-sig wallet
     Transaction[] public transactions;
 
     modifier onlyOwner() {
@@ -91,11 +90,6 @@ contract MultiSigWallet {
     @notice Fallback function to send ether to the contract
      */
     receive() external payable {
-        emit Deposit(msg.sender, msg.value, address(this).balance);
-    }
-
-    // Helper function to deposit to the contract
-    function deposit() external payable {
         emit Deposit(msg.sender, msg.value, address(this).balance);
     }
 
@@ -189,12 +183,14 @@ contract MultiSigWallet {
         emit RevokeConfirmation(msg.sender, _txIndex);
     }
 
-    /**
-    @notice Get the owners of the multi-sig wallet
-    @return Array of addresses corresponding to the owners
-     */
+    /// @return Array of addresses corresponding to the owners
     function getOwners() public view returns (address[] memory) {
         return owners;
+    }
+
+    /// @return All the transactions
+    function getTransactions() public view returns (Transaction[] memory) {
+        return transactions;
     }
 
     /**
@@ -202,18 +198,5 @@ contract MultiSigWallet {
      */
     function getTransactionCount() public view returns (uint256) {
         return transactions.length;
-    }
-}
-
-contract TestContract {
-    uint256 public i;
-
-    function callMe(uint256 j) public {
-        i += j;
-    }
-
-    /// @notice Helper function to get data in hex format to call 'callMe' function
-    function getData() public pure returns (bytes memory) {
-        return abi.encodeWithSignature("callMe(uint256)", 123);
     }
 }

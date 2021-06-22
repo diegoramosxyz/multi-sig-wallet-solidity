@@ -17,6 +17,8 @@ async function main() {
 
   // We get the contract to deploy
   const Factory = await hre.ethers.getContractFactory('MultiSigWallet')
+  // Deploy the contract with three accounts and a minimum requirement
+  // of two confirmations to execute a transaction
   const contract = await Factory.deploy(
     [accounts[0].address, accounts[1].address, accounts[2].address],
     2

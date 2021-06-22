@@ -7,6 +7,7 @@ const initialState: State = {
     address: null,
     balance: null,
   },
+  txStatus: null,
   balances: {
     contract: null,
     userAccount: null,

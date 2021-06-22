@@ -12,6 +12,10 @@ export type State = {
     balance: string | null
     address: string | null
   }
+  txStatus: {
+    index: number
+    confirmed: boolean
+  } | null
   balances: {
     contract: string | null
     userAccount: string | null
@@ -32,5 +36,6 @@ export type Actions = {
     | 'UPDATE_BALANCES'
     | 'UPDATE_OWNERS'
     | 'UPDATE_TRANSACTION'
+    | 'TX_STATUS'
   payload?: any
 }

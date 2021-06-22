@@ -9,11 +9,7 @@ import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
 import { getBalance } from 'utils/eventData'
 import Transactions from 'components/Transactions'
-import {
-  getOwners,
-  getAllTransactions,
-  confirmationsRequired,
-} from 'utils/contractMethods'
+import { confirmationsRequired } from 'utils/contractMethods'
 import { MultiSigWalletContract } from 'utils/types'
 import { ContractEventListener } from 'utils/eventListeners'
 
@@ -57,10 +53,14 @@ export default function index({
 
       // Detect when accounts are changed in MetaMask
       window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        dispatch({
+          type: 'TX_STATUS',
+          payload: null,
+        })
         // Update transactions
         dispatch({
           type: 'ADD_TRANSACTIONS',
-          payload: await getAllTransactions(contract, provider),
+          payload: await contract.getTransactions(),
         })
         // Add event listerner to detect when accounts are changed in MetaMask
         dispatch({
@@ -90,7 +90,7 @@ export default function index({
         type: 'UPDATE_OWNERS',
         payload: {
           confirmationsRequired: await confirmationsRequired(contract),
-          owners: await getOwners(contract),
+          owners: await contract.getOwners(),
         },
       })
       dispatch({
@@ -99,7 +99,7 @@ export default function index({
       })
       dispatch({
         type: 'ADD_TRANSACTIONS',
-        payload: await getAllTransactions(contract, provider),
+        payload: await contract.getTransactions(),
       })
     })()
   }, [])
