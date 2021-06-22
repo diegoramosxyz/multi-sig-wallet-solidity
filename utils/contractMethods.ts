@@ -12,6 +12,10 @@ export async function getOwners(contract: MultiSigWalletContract) {
   return arr
 }
 
+export async function confirmationsRequired(contract: MultiSigWalletContract) {
+  return (await contract.numConfirmationsRequired()).toNumber()
+}
+
 export async function getAllTransactions(
   contract: MultiSigWalletContract,
   provider: ethers.providers.Web3Provider

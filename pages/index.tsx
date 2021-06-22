@@ -9,14 +9,21 @@ import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
 import { getBalance } from 'utils/eventData'
 import Transactions from 'components/Transactions'
-import { getOwners, getAllTransactions } from 'utils/contractMethods'
+import {
+  getOwners,
+  getAllTransactions,
+  confirmationsRequired,
+} from 'utils/contractMethods'
 import { MultiSigWalletContract } from 'utils/types'
 import { ContractEventListener } from 'utils/eventListeners'
 
-export default function index() {
+export default function index({
+  MULTI_SIG_WALLET_ADDRESS,
+}: {
+  MULTI_SIG_WALLET_ADDRESS: string
+}) {
   const { dispatch } = useContext(GlobalContext)
   // MultiSigWallet contract running locally on hardhat node
-  const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
   useEffect(() => {
     // Get the provider from the browser
@@ -25,7 +32,7 @@ export default function index() {
 
     // Create a new Contract instance for the Multi Sig Wallet
     let contract = new Contract(
-      contractAddress,
+      MULTI_SIG_WALLET_ADDRESS || '',
       MultiSigWallet.abi,
       provider.getSigner()
     ) as MultiSigWalletContract
@@ -79,7 +86,13 @@ export default function index() {
       ContractEventListener(contract, provider, dispatch, 'RevokeConfirmation')
       ContractEventListener(contract, provider, dispatch, 'Deposit')
 
-      dispatch({ type: 'UPDATE_OWNERS', payload: await getOwners(contract) })
+      dispatch({
+        type: 'UPDATE_OWNERS',
+        payload: {
+          confirmationsRequired: await confirmationsRequired(contract),
+          owners: await getOwners(contract),
+        },
+      })
       dispatch({
         type: 'UPDATE_BALANCES',
         payload: await getBalance(provider, contract.address),
@@ -100,4 +113,10 @@ export default function index() {
       <Transactions />
     </Layout>
   )
+}
+
+export async function getStaticProps() {
+  return {
+    props: { MULTI_SIG_WALLET_ADDRESS: process.env.MULTI_SIG_WALLET_ADDRESS },
+  }
 }

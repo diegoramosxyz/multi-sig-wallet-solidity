@@ -3,7 +3,7 @@ import { useContext } from 'react'
 
 export default function Owners() {
   const {
-    state: { owners },
+    state: { owners, confirmationsRequired },
   } = useContext(GlobalContext)
   return (
     <div className="mb-3">
@@ -15,6 +15,7 @@ export default function Owners() {
           </li>
         ))}
       </ul>
+      <p>Confirmations required: {confirmationsRequired}</p>
     </div>
   )
 }

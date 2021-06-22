@@ -12,6 +12,7 @@ const initialState: State = {
     userAccount: null,
   },
   owners: [],
+  confirmationsRequired: 0,
   provider: null,
   contract: null,
   transactions: [],

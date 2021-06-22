@@ -49,7 +49,8 @@ const AppReducer = (state: State, action: any) => {
     case 'UPDATE_OWNERS':
       return {
         ...state,
-        owners: action.payload,
+        owners: action.payload.owners,
+        confirmationsRequired: action.payload.confirmationsRequired,
       }
     default:
       return state

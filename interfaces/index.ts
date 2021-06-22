@@ -17,6 +17,7 @@ export type State = {
     userAccount: string | null
   }
   owners: string[]
+  confirmationsRequired: number
   provider: ethers.providers.Web3Provider | null
   contract: MultiSigWalletContract | null
   transactions: any[]
