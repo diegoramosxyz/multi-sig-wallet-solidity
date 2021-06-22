@@ -117,6 +117,8 @@ export default function index({
 
 export async function getStaticProps() {
   return {
-    props: { MULTI_SIG_WALLET_ADDRESS: process.env.MULTI_SIG_WALLET_ADDRESS },
+    props: {
+      MULTI_SIG_WALLET_ADDRESS: process.env.MULTI_SIG_WALLET_LOCALHOST_ADDRESS,
+    },
   }
 }
