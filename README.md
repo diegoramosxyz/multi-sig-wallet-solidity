@@ -24,6 +24,6 @@ This project is a prototype for a Multi-Sig Wallet implementation in Solidity. T
 
 - [x] All the contract methods worked as expected
 
-The UI lacks error handling and the code requires some refactoring to separate concerns and be make it more readable.
+The UI lacks error handling and the code requires extensive refactoring.
 
-I wanted to make it look better and refactor the code, but since I have plenty of experience with front-end development, I decided to move on and learn more Solidity.
+I wanted to make the UI look better and refactor the code, but since I have plenty of experience with front-end development, I decided to move on and learn more Solidity.
