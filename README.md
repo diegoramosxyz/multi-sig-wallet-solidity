@@ -4,25 +4,25 @@ This project is a prototype for a Multi-Sig Wallet implementation in Solidity. T
 
 ## Goals achieved
 
-[x] - Replicated a non-trivial smart-contract. [Source](https://solidity-by-example.org/app/multi-sig-wallet/)
+- [x] Replicated a non-trivial smart-contract. [Source](https://solidity-by-example.org/app/multi-sig-wallet/)
 
-[x] - Wrote unit tests for the smart-contract using Chai
+- [x] Wrote unit tests for the smart-contract using Chai
 
-[x] - Learned how to use the Ethereum JSON-RPC API
+- [x] Learned how to use the Ethereum JSON-RPC API
 
-[x] - Learned how to use Ethers.js
+- [x] Learned how to use Ethers.js
 
-[x] - Improved TypeScript skills by creating types for all the smart-contract types and methods. This made development much easier.
+- [x] Improved TypeScript skills by creating types for all the smart-contract types and methods. This made development much easier.
 
-[x] - Deployed the contract to a local network using hardhat
+- [x] Deployed the contract to a local network using hardhat
 
-[x] - Deployed the contract to the Ropsten Testnet using [Alchemy](https://alchemy.com)
+- [x] Deployed the contract to the Ropsten Testnet using [Alchemy](https://alchemy.com)
 
-[x] - Created an UI to interact with the contract
+- [x] Created an UI to interact with the contract
 
-[x] - The UI responds to events, instantly updating any relevant data
+- [x] The UI responds to events, instantly updating any relevant data
 
-[x] - All the contract methods worked as expected
+- [x] All the contract methods worked as expected
 
 The UI lacks error handling and the code requires some refactoring to separate concerns and be make it more readable.
 
