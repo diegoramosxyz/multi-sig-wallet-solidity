@@ -23,12 +23,12 @@ export default function Transactions() {
         {transactions
           .map((tx: transaction, index: number) => (
             <article key={index} className="p-1 overflow-hidden">
-              <p className="font-mono">
-                <pre className="font-sans">To: </pre>
+              <div className="font-mono">
+                <p className="font-sans">To: </p>
                 <pre className="overflow-ellipsis overflow-hidden">
                   <code className="font-mono">{tx.to}</code>
                 </pre>
-              </p>
+              </div>
               <p>
                 Value: <strong>{ethers.utils.formatEther(tx.value)} ETH</strong>
               </p>

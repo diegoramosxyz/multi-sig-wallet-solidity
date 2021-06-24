@@ -17,7 +17,7 @@ export default function index({
   NETWORK_ID,
 }: {
   MULTI_SIG_WALLET_ADDRESS: string
-  NETWORK_ID: string
+  NETWORK_ID: number
 }) {
   const { dispatch } = useContext(GlobalContext)
   // MultiSigWallet contract running locally on hardhat node
@@ -84,7 +84,7 @@ export default function index({
     // Fetch initial data
     ;(async () => {
       provider.on('network', (newNetwork, oldNetwork) => {
-        if (newNetwork.chainId !== +NETWORK_ID) {
+        if (newNetwork.chainId !== NETWORK_ID) {
           alert(`You must use network ID: ${NETWORK_ID}`)
         }
         // When a Provider makes its initial connection, it emits a "network"
@@ -138,10 +138,22 @@ export default function index({
 }
 
 export async function getStaticProps() {
+  const HARDHAT_NETWORK_ID = 31337
+  const ROPSTEN_NETWORK_ID = 3
+  const {
+    NODE_ENV,
+    MULTI_SIG_WALLET_HARDHAT_ADDRESS,
+    MULTI_SIG_WALLET_ROPSTEN_ADDRESS,
+  } = process.env
+  console.log(NODE_ENV)
   return {
     props: {
-      MULTI_SIG_WALLET_ADDRESS: process.env.MULTI_SIG_WALLET_LOCALHOST_ADDRESS,
-      NETWORK_ID: process.env.LOCALHOST_NETWORK_ID,
+      MULTI_SIG_WALLET_ADDRESS:
+        NODE_ENV === 'production'
+          ? MULTI_SIG_WALLET_ROPSTEN_ADDRESS
+          : MULTI_SIG_WALLET_HARDHAT_ADDRESS,
+      NETWORK_ID:
+        NODE_ENV === 'production' ? ROPSTEN_NETWORK_ID : HARDHAT_NETWORK_ID,
     },
   }
 }
