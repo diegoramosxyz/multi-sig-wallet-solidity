@@ -9,14 +9,15 @@ import { GlobalContext } from 'context/GlobalState'
 import MultiSigWallet from '../artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json'
 import { getBalance } from 'utils/eventData'
 import Transactions from 'components/Transactions'
-import { confirmationsRequired } from 'utils/contractMethods'
 import { MultiSigWalletContract } from 'utils/types'
 import { ContractEventListener } from 'utils/eventListeners'
 
 export default function index({
   MULTI_SIG_WALLET_ADDRESS,
+  NETWORK_ID,
 }: {
   MULTI_SIG_WALLET_ADDRESS: string
+  NETWORK_ID: string
 }) {
   const { dispatch } = useContext(GlobalContext)
   // MultiSigWallet contract running locally on hardhat node
@@ -45,7 +46,10 @@ export default function index({
             type: 'UPDATE_USER',
             payload: {
               address: accounts[0],
-              balance: await getBalance(provider, accounts[0]),
+              // Convert to a number and truncate to 2 decimal points
+              balance:
+                Math.floor(+(await getBalance(provider, accounts[0])) * 100) /
+                100,
             },
           })
         })
@@ -79,6 +83,17 @@ export default function index({
 
     // Fetch initial data
     ;(async () => {
+      provider.on('network', (newNetwork, oldNetwork) => {
+        if (newNetwork.chainId !== +NETWORK_ID) {
+          alert(`You must use network ID: ${NETWORK_ID}`)
+        }
+        // When a Provider makes its initial connection, it emits a "network"
+        // event with a null oldNetwork along with the newNetwork. So, if the
+        // oldNetwork exists, it represents a changing network
+        if (oldNetwork) {
+          window.location.reload()
+        }
+      })
       // Create event listeners
       ContractEventListener(contract, provider, dispatch, 'SubmitTransaction')
       ContractEventListener(contract, provider, dispatch, 'ConfirmTransaction')
@@ -89,13 +104,18 @@ export default function index({
       dispatch({
         type: 'UPDATE_OWNERS',
         payload: {
-          confirmationsRequired: await confirmationsRequired(contract),
+          confirmationsRequired: (
+            await contract.numConfirmationsRequired()
+          ).toNumber(),
           owners: await contract.getOwners(),
         },
       })
       dispatch({
         type: 'UPDATE_BALANCES',
-        payload: await getBalance(provider, contract.address),
+        // Truncate number to two decimal points
+        payload:
+          Math.floor(+(await getBalance(provider, contract.address)) * 100) /
+          100,
       })
       dispatch({
         type: 'ADD_TRANSACTIONS',
@@ -108,8 +128,10 @@ export default function index({
     <Layout head="Multi-Sig Wallet">
       <UserAccount />
       <Owners />
-      <DepositEth />
-      <SubmitTransaction />
+      <section className="grid md:flex justify-center md:justify-around py-5 mb-3 rounded ring-1 ring-trueGray-700">
+        <DepositEth />
+        <SubmitTransaction />
+      </section>
       <Transactions />
     </Layout>
   )
@@ -119,6 +141,7 @@ export async function getStaticProps() {
   return {
     props: {
       MULTI_SIG_WALLET_ADDRESS: process.env.MULTI_SIG_WALLET_LOCALHOST_ADDRESS,
+      NETWORK_ID: process.env.LOCALHOST_NETWORK_ID,
     },
   }
 }

@@ -30,8 +30,12 @@ export default function CallContract() {
   }
 
   return (
-    <Fragment>
-      <p>Submit a transaction</p>
+    <article>
+      <header>
+        <h1 className="text-xl font-semibold text-center mb-3">
+          Submit a transaction
+        </h1>
+      </header>
       <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
         <label htmlFor="_to" className="sr-only" />
         <input
@@ -57,6 +61,6 @@ export default function CallContract() {
           Submit Transaction
         </button>
       </form>
-    </Fragment>
+    </article>
   )
 }

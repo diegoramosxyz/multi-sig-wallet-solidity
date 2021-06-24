@@ -26,7 +26,11 @@ export default function DepositEth() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
-      <header>Contract Balance: {balances.contract} ETH</header>
+      <header className="mb-3 text-center">
+        <h1 className="text-md font-semibold">
+          Contract Balance: {balances.contract} ETH
+        </h1>
+      </header>
       <label htmlFor="_value" className="sr-only" />
       <input
         className="bg-trueGray-800 text-trueGray-100 block rounded mb-3 ring-1 px-3 py-2"
